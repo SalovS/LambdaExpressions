@@ -1,11 +1,10 @@
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.Date;
 
 public class Main
@@ -33,7 +32,7 @@ public class Main
                 .filter(s -> s.getWorkStart().after(start))
                 .filter(s -> s.getWorkStart().before(end))
                         .sorted((o1, o2) -> o1.getSalary() - o2.getSalary())
-                .map((Function<Employee, String>) worker -> worker.getName())
+                .map(worker -> worker.getName())
                         .limit(1)
                         .collect(Collectors.joining(
                                 ", ", "Сотрудника с максимальной зарплатой среди тех," +
@@ -60,8 +59,14 @@ public class Main
                 ));
             }
         }
-        catch (Exception ex) {
-            ex.printStackTrace();
+        catch (IOException e) {
+            System.err.println("Ошибка чтения файла " + e.getMessage());
+        }
+        catch (ParseException e) {
+            System.err.println("Неправльно указана дата " + e.getMessage());
+        }
+        catch (NumberFormatException e) {
+            System.err.println("Неправльно указана зарплата " + e.getMessage());
         }
         return staff;
     }
